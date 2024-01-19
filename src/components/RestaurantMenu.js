@@ -8,17 +8,11 @@ const RestaurantMenu = () => {
     const { resId } = useParams();
     const resInfo = useRestaurantMenu(resId);
 
+
     if (resInfo === null) return <Shimmer />;
 
     const { name, cuisines, costForTwoMessage } =
         resInfo?.cards[0]?.card?.card?.info;
-
-    const { itemCards } =
-        resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card?.card;
-    console.log(
-        "rest",
-        resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards
-    );
 
     const categories =
         resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
@@ -26,7 +20,6 @@ const RestaurantMenu = () => {
                 c.card?.card?.["@type"] ===
                 "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
         );
-    console.log(categories);
     return (
         <div className="text-center">
             <h1 className="font-bold my-6 text-2xl">{name}</h1>
@@ -34,18 +27,13 @@ const RestaurantMenu = () => {
                 {cuisines.join(", ")} - {costForTwoMessage}
             </h3>
 
-            {categories.map((category) => (
-                <RestaurantCategory data={category?.card} />
+            {categories.map((category, index) => (
+                <RestaurantCategory
+                    key={category?.card.title}
+                    data={category?.card}
+                    showItems={index === 0 && true}
+                />
             ))}
-
-            {/* <ul>
-                {itemCards.map((item) => (
-                    <li key={item.card.info.id}>
-                        {item.card.info.name} - {"Rs - "}
-                        {item.card.info.price / 100}
-                    </li>
-                ))}
-            </ul> */}
         </div>
     );
 };
